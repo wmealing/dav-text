@@ -378,7 +378,8 @@ void loadSettings()
 {
   int l;
   char s[200];
-  char home[80];
+  char *home; 
+  char *davrcpath;
   char *r;
   char *c;
   FILE *fp;
@@ -386,16 +387,18 @@ void loadSettings()
   char FnGotten[12];
   for(l=0;l<12;l++)
     FnGotten[l] = 0;
-  strcpy(home,getenv("HOME"));
-  strcat(home,"/.davrc");
-  fp = fopen(home,"r");
+  home = getenv("HOME");
+  davrcpath = malloc( strlen("HOME") + strlen("/.davrc") + 1);
+  strcpy(davrcpath,home);
+  strcat(davrcpath,"/.davrc");
+  fp = fopen(davrcpath,"r");
   if(fp==NULL) //File doesn't exist, make one
   {
-    fp = fopen(home,"w");
+    fp = fopen(davrcpath,"w");
     if(fp==NULL) { return; }
     writeRC(fp);
     fclose(fp);
-    fp = fopen(home,"r");
+    fp = fopen(davrcpath,"r");
   }
   //It's there, so read from it
   while(!feof(fp)) {
@@ -503,7 +506,7 @@ void loadSettings()
   }
   if(gotten!=511)
   {
-    fp = fopen(home,"w");
+    fp = fopen(davrcpath,"w");
     if(fp==NULL) return;
     writeRC(fp);
     fclose(fp);
